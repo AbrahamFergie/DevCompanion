@@ -6,7 +6,6 @@ const MongoStore  = require('connect-mongo')(session)
 const passport = require("passport")
 const helmet = require("helmet")
 const cors = require("cors")
-const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
 
 const routes = require("./back-end/routes")
@@ -27,7 +26,6 @@ const corsOptions = {
 };
 app.use(cors(corsOptions))
 // log HTTP requests
-app.use(morgan('combined'))
 app.use(cors());
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {
