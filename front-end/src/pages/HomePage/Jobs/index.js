@@ -52,60 +52,91 @@ export class Jobs extends Component {
 
     
   render() {
-    const { jobs, modalData } = this.state
-    //console.log('====this.state.jobs[0]====', this.state.jobs[0])
+    const { modalData, jobs, readMore } = this.state
+    console.log('====jobs[0]====', this.state.jobs[0])
 
     return (
-      <Container fluid  className="jobs">
-        <div className="contents">
-          <h3>Jobs</h3>
-          <hr></hr>
-          { jobs ? jobs.map( ( job, index ) => {
+      <Container fluid={true}  className="center">
+        <h2><u>Jobs</u></h2>
+        <hr></hr>
+        <Row className="job-row">
+          { jobs ? jobs.map(( job, index ) => {
             return (
               <Col key={ index } md="4" className="center">
 
                 <div className="job-title">
                   <h4>{ job.title }</h4>
                 </div>
-
                 <div className="job-content">
                   <p><strong>Company:</strong> { job.company }  |  <strong>Location:</strong> { job.location }</p>
                 </div>
+
                 <Button variant="outline-dark" onClick={ this.handleModalShow.bind( this, index )}>
-                  Read More
-                </Button>
-                <Modal
-                    { ...this.props }
-                    show={ this.state.readMore }
-                    onHide={ this.handleModalShow.bind( this, index )}
-                    size="lg"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                  >
-                  <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                      <h4>{ modalData.title } </h4>
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <h5>Company: { modalData.company }  |  Location: { modalData.location }</h5>
-                    <div className="job-description">
-                      <div>Description: { parse(modalData.description) }</div>
-                    </div>
-                    <a className="btn btn-outline-dark" href={ modalData.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
-                  </Modal.Body>                  
-                </Modal>
-                <a className="btn btn-outline-dark" href={ job.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
+                   Read More
+                 </Button>
+                 <Modal
+                     { ...this.props }
+                     show={ this.state.readMore }
+                     onHide={ this.handleModalShow.bind( this, index )}
+                     size="lg"
+                     aria-labelledby="contained-modal-title-vcenter"
+                     centered
+                   >
+                   <Modal.Header closeButton>
+                     <Modal.Title id="contained-modal-title-vcenter">
+                       <h4>{ modalData.title } </h4>
+                     </Modal.Title>
+                   </Modal.Header>
+                   <Modal.Body>
+                     <h5>Company: { modalData.company }  |  Location: { modalData.location }</h5>
+                     <div className="job-description">
+                       <div>Description: { parse(modalData.description) }</div>
+                     </div>
+                     <a className="btn btn-outline-dark" href={ modalData.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
+                   </Modal.Body>                  
+                 </Modal>
+                 <a className="btn btn-outline-dark" href={ job.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
                
-                <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button>    
+                 <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button> 
                                
+                {/* <Row>                  
+                  <Col>
+                    <Button variant="outline-dark" onClick={ this.handleModalShow.bind( this, index )}>Read More</Button>
+                  </Col>
+                  <Modal
+                      { ...this.props }
+                      show={ readMore }
+                      onHide={ this.handleModalShow.bind( this, index )}
+                      size="lg"
+                      aria-labelledby="contained-modal-title-vcenter"
+                      centered
+                      >
+                    <Modal.Header closeButton>
+                      <Modal.Title id="contained-modal-title-vcenter">
+                        <h4>{ modalData.title } </h4>
+                      </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <h5>Company: { modalData.company }  |  Location: { modalData.location }</h5>
+                      <div className="job-description">
+                        <div>Description: { parse(modalData.description) }</div>
+                      </div>
+                      <a className="btn btn-outline-dark" href={ modalData.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
+                    </Modal.Body>                  
+                  </Modal>
+                  <Col>
+                    <a className="btn btn-outline-dark" href={ job.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
+                  </Col>
+                  <Col>
+                    <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button>
+                  </Col>
+                </Row> */}
                 <hr></hr>
               </Col>
             )
-          }) : <div><br></br><h4 className="center">Loading...</h4><br></br></div>
-          }
-        
-        </div>
+            }) : <div><br></br><h4 className="center">Loading...</h4><br></br></div>
+          }        
+        </Row>
       </Container>
     )
   }

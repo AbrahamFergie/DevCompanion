@@ -52,7 +52,7 @@ export class NewsFeeds extends Component {
           { this.state.articles ? this.state.articles.map( ( article, index ) => {
             return (
               <Col key={ index } md="4" className="article center">
-                <a target="_blank" href={ article.url }><h4 className="content">{ article.title }</h4></a>
+                <h4 className="content">{ article.title }</h4>
                 <small className="content">{ article.author }</small>
                 { article.urlToImage ? <a target="_blank" href={ article.url }><Image src={ article.urlToImage } thumbnail /></a> : <div></div> }
                 <a target="_blank" href={ article.url }><u>Click To View Article</u></a>         

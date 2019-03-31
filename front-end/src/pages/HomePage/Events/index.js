@@ -32,9 +32,9 @@ export class Events extends Component {
   // }
 
   handleModalShow = ( index ) => {
-    const { events } = this.state
+    const { events, readMore } = this.state
 
-    this.setState({ readMore: !this.state.readMore, modalData: events[index] })
+    this.setState({ readMore: !readMore, modalData: events[index] })
   }
   
   handleShareAction = ( index ) => {
@@ -64,12 +64,12 @@ export class Events extends Component {
     const { events, modalData, readMore } = this.state
     //console.log('====events[0]====', events[0])
     return (
-      <Container fluid  className="events">
-        <div className="contents">
-          <h3>Events</h3>
-          <hr></hr>
+      <Container fluid={true} className="center">
+        <h2><u>Events</u></h2>
+        <hr></hr>
+        <Row className="event-row">          
           { events ? events.map( (event, index) =>  {     
-            let desc = event.description && typeof event.description === "string" ? parse(event.description) : "No description available";            
+           // let desc = event.description && typeof event.description === "string" ? parse(event.description) : "No description available";            
             return ( 
               <Col key={ index } md="4" className="center">
 
@@ -136,7 +136,7 @@ export class Events extends Component {
             )
           }) : <div><br></br><h4 className="center">Loading...</h4><br></br></div>
         }
-      </div>
+      </Row>
     </Container>
     )
   }
