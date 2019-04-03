@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Image, Container, Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
 import NewsAPI from 'newsapi';
@@ -19,7 +18,6 @@ export class NewsFeeds extends Component {
 
   componentDidMount() {
     this.getNews()
-    
   }
   // Get API for news feeds.
   getNews = async () => {
@@ -44,23 +42,23 @@ export class NewsFeeds extends Component {
   }
 
   render() {
-    console.log('====this.state.articles[0]====', this.state.articles[0])
     return (
       <Container fluid={true} className="center">
         <h2><u>News Articles</u></h2>
         <hr></hr>
         <Row className="article-row">
-          { this.state.articles.map( ( article, index ) => {
+          { this.state.articles ? this.state.articles.map( ( article, index ) => {
             return (
               <Col key={ index } md="4" className="article center">
-                <a target="_blank" href={ article.url }><h4 className="content">{ article.title }</h4></a>
+                <h4 className="content">{ article.title }</h4>
                 <small className="content">{ article.author }</small>
                 { article.urlToImage ? <a target="_blank" href={ article.url }><Image src={ article.urlToImage } thumbnail /></a> : <div></div> }
                 <a target="_blank" href={ article.url }><u>Click To View Article</u></a>         
-                <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button>       
+                <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button>                                       
                 <hr></hr>
               </Col>
-            )}) }
+            )}) : <div><br></br><h4 className="center">Loading...</h4><br></br></div>          
+          }
         </Row>
       </Container>
     )
