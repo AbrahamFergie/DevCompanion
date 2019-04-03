@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Container, Button, Modal, Col, Row } from 'react-bootstrap';
+import { Container, Button, Image, Col, Row } from 'react-bootstrap';
 import axios from 'axios';
 import parse from 'html-react-parser';
+import { parseJsonSourceFileConfigFileContent } from 'typescript';
 
 require("./index.css");
 
@@ -18,7 +19,6 @@ export class Jobs extends Component {
 
   componentDidMount = () => {
     this.getGitHubJobs();
-    
   }
 
   handleModalShow = ( index ) => {
@@ -49,12 +49,9 @@ export class Jobs extends Component {
       jobs: jobs.data
     })
   }
-
     
   render() {
-    const { modalData, jobs, readMore } = this.state
-    console.log('====jobs[0]====', this.state.jobs[0])
-
+    const { jobs } = this.state
     return (
       <Container fluid={true}  className="center">
         <h2><u>Jobs</u></h2>
@@ -70,67 +67,34 @@ export class Jobs extends Component {
                 <div className="job-content">
                   <p><strong>Company:</strong> { job.company }  |  <strong>Location:</strong> { job.location }</p>
                 </div>
-
-                <Button variant="outline-dark" onClick={ this.handleModalShow.bind( this, index )}>
-                   Read More
-                 </Button>
-                 <Modal
-                     { ...this.props }
-                     show={ this.state.readMore }
-                     onHide={ this.handleModalShow.bind( this, index )}
-                     size="lg"
-                     aria-labelledby="contained-modal-title-vcenter"
-                     centered
-                   >
-                   <Modal.Header closeButton>
-                     <Modal.Title id="contained-modal-title-vcenter">
-                       <h4>{ modalData.title } </h4>
-                     </Modal.Title>
-                   </Modal.Header>
-                   <Modal.Body>
-                     <h5>Company: { modalData.company }  |  Location: { modalData.location }</h5>
-                     <div className="job-description">
-                       <div>Description: { parse(modalData.description) }</div>
-                     </div>
-                     <a className="btn btn-outline-dark" href={ modalData.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
-                   </Modal.Body>                  
-                 </Modal>
-                 <a className="btn btn-outline-dark" href={ job.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
-               
-                 <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button> 
-                               
-                {/* <Row>                  
-                  <Col>
-                    <Button variant="outline-dark" onClick={ this.handleModalShow.bind( this, index )}>Read More</Button>
-                  </Col>
-                  <Modal
-                      { ...this.props }
-                      show={ readMore }
-                      onHide={ this.handleModalShow.bind( this, index )}
-                      size="lg"
-                      aria-labelledby="contained-modal-title-vcenter"
-                      centered
-                      >
-                    <Modal.Header closeButton>
-                      <Modal.Title id="contained-modal-title-vcenter">
-                        <h4>{ modalData.title } </h4>
-                      </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <h5>Company: { modalData.company }  |  Location: { modalData.location }</h5>
-                      <div className="job-description">
-                        <div>Description: { parse(modalData.description) }</div>
+                <Button type="button" className="btn" variant="dark" data-toggle="modal" data-target={`#modal${ index }`}>
+                  Read More
+                </Button>
+                <div className="modal fade w-100" id={`modal${ index }`} tabIndex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                  <div className="modal-dialog modal-dialog-scrollable" role="document">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title" id="exampleModalScrollableTitle">{ job.title }</h5>
+                        <Button type="button" variant="dark" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </Button>
                       </div>
-                      <a className="btn btn-outline-dark" href={ modalData.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
-                    </Modal.Body>                  
-                  </Modal>
-                  <Col>
-                    <a className="btn btn-outline-dark" href={ job.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>
-                  </Col>
-                  <Col>
-                    <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button>
-                  </Col>
-                </Row> */}
+                      <div className="modal-body">
+                        <Image src={ job.company_logo } thumbnail />
+                        <p><strong>Company:</strong> { job.company }  |  <strong>Location:</strong> { job.location }</p>
+                        <div className="job-description">
+                          <p><strong>Description: </strong>{ parse(job.description) }</p>
+                        </div>
+                        <a className="btn btn-outline-dark" href={ job.link } target="_blank" rel="noopener noreferrer">Go To Posting</a>
+                      </div>
+                      <div className="modal-footer">
+                        <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button>    
+                        <Button type="button" className="btn btn-secondary" data-dismiss="modal">Close</Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                 <a className="btn btn-outline-dark" href={ job.url } target="_blank" rel="noopener noreferrer">Go To Posting</a>               
                 <hr></hr>
               </Col>
             )

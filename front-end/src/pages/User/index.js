@@ -29,7 +29,7 @@ export default class User extends Component {
       .catch(err => console.log(err)) 
   }
 
-  onDrop(picture) {
+  onDrop = (picture) => {
     const reader = new FileReader();
     const file = picture.target.files[0];
 
@@ -61,13 +61,13 @@ export default class User extends Component {
     }
   };
 
-  moveCaretAtEnd(e) {
+  moveCaretAtEnd = (e) => {
     var temp_value = e.target.value
     e.target.value = ''
     e.target.value = temp_value
   }
 
-  handleFormDisplay() {
+  handleFormDisplay = () => {
     if(this.state.edit === false){
       this.setState({edit: true})
     }else {
@@ -75,11 +75,11 @@ export default class User extends Component {
     }
   }
 
-  handlePasswordChange() {
-    const { user, password, newPassword, confNewPassword } = this.state;
+  handlePasswordChange = () => {
+    const { username, password, newPassword, confNewPassword } = this.state.user;
 
     if(newPassword === confNewPassword){
-      axios.post(`/api/user/change-password/${user.username}`, {password, newPassword})
+      axios.post(`/api/user/change-password/${ username }`, { password, newPassword })
       .then(payload => {
         if(payload.data.status === 401){
           this.setState({rejected: true})
@@ -92,7 +92,7 @@ export default class User extends Component {
     }
   }
 
-  handleProfileUpdate() {
+  handleProfileUpdate = () => {
     const { user } = this.state
     axios.post("/api/user/update", user)
     .then(payload => {
@@ -107,14 +107,14 @@ export default class User extends Component {
     this.handleInteraction()
   }
 
-  handleInteraction() {
+  handleInteraction = () => {
     const { clicked } = this.state
     
     let flip = clicked ? false : true
     this.setState({ clicked: flip })
   }
 
-  handleDelete() {
+  handleDelete = () => {
     const { user } = this.state
     axios.get(`api/user/delete/${user.username}`)
       .then( payload => {
@@ -128,7 +128,6 @@ export default class User extends Component {
     
     if ( user ) { if(user.name === "") return <a href="/"><h4 className="center">No User Logged In Click To Go To Login Page</h4></a> };
     noMatch = newPassword !== confNewPassword ? true : false;
-
     return (
       <Container fluid={true}>
         <Row>

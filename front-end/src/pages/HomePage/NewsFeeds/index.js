@@ -18,7 +18,6 @@ export class NewsFeeds extends Component {
 
   componentDidMount() {
     this.getNews()
-    
   }
   // Get API for news feeds.
   getNews = async () => {
@@ -43,7 +42,6 @@ export class NewsFeeds extends Component {
   }
 
   render() {
-    //console.log('====this.state.articles[0]====', this.state.articles[0])
     return (
       <Container fluid={true} className="center">
         <h2><u>News Articles</u></h2>
