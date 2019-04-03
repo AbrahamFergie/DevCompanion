@@ -30,7 +30,6 @@ router.get("/check-user", ( request, response ) => {
 router.post('/change-password/:username', (request, response) => {
     const { username } = request.params;
     const passwordData = request.body;
-    console.log('====username, passwordData====', username, passwordData)
     User.findOne({ username }, ( err, user ) => {
       if(user.password === passwordData.password){
         user.password = passwordData.newPassword;

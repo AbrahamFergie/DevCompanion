@@ -19,7 +19,6 @@ export class Jobs extends Component {
 
   componentDidMount = () => {
     this.getGitHubJobs();
-    
   }
 
   handleModalShow = ( index ) => {
@@ -50,19 +49,15 @@ export class Jobs extends Component {
       jobs: jobs.data
     })
   }
-
     
   render() {
     const { jobs } = this.state
-    console.log('====jobs====', jobs)
     return (
       <Container fluid={true}  className="center">
         <h2><u>Jobs</u></h2>
         <hr></hr>
         <Row className="job-row">
           { jobs ? jobs.map(( job, index ) => {
-            let desc = job.description && typeof job.description === "string" ? parse(job.description) : "No description available";
-            console.log('====job, desc====', job, desc)            
             return (
               <Col key={ index } md="4" className="center">
 
@@ -75,20 +70,20 @@ export class Jobs extends Component {
                 <Button type="button" className="btn" variant="dark" data-toggle="modal" data-target={`#modal${ index }`}>
                   Read More
                 </Button>
-                <div className="modal fade" id={`modal${ index }`} tabIndex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                <div className="modal fade w-100" id={`modal${ index }`} tabIndex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
                   <div className="modal-dialog modal-dialog-scrollable" role="document">
                     <div className="modal-content">
                       <div className="modal-header">
-                        <h5 className="modal-title" id="exampleModalScrollableTitle">Modal title</h5>
+                        <h5 className="modal-title" id="exampleModalScrollableTitle">{ job.title }</h5>
                         <Button type="button" variant="dark" className="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </Button>
                       </div>
                       <div className="modal-body">
                         <Image src={ job.company_logo } thumbnail />
-                        <h5>{ job.localized_location }</h5>
+                        <p><strong>Company:</strong> { job.company }  |  <strong>Location:</strong> { job.location }</p>
                         <div className="job-description">
-                          <div>Description: { parse(job.description) }</div>
+                          <p><strong>Description: </strong>{ parse(job.description) }</p>
                         </div>
                         <a className="btn btn-outline-dark" href={ job.link } target="_blank" rel="noopener noreferrer">Go To Posting</a>
                       </div>

@@ -18,7 +18,6 @@ export class NewsFeeds extends Component {
 
   componentDidMount() {
     this.getNews()
-    
   }
   // Get API for news feeds.
   getNews = async () => {
