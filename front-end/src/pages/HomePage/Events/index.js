@@ -61,15 +61,15 @@ export class Events extends Component {
   
   render() {
     //displayedIndex, 
-    const { events, modalData, readMore } = this.state
-    //console.log('====events[0]====', events[0])
+    const { events } = this.state
+    console.log('====events====', events)
     return (
       <Container fluid={true} className="center">
         <h2><u>Events</u></h2>
         <hr></hr>
         <Row className="event-row">          
           { events ? events.map( (event, index) =>  {     
-           // let desc = event.description && typeof event.description === "string" ? parse(event.description) : "No description available";            
+           let desc = event.description && typeof event.description === "string" ? parse(event.description) : "No description available";            
             return ( 
               <Col key={ index } md="4" className="center">
 
@@ -78,7 +78,7 @@ export class Events extends Component {
                   <h5>{ event.localized_location }</h5>
                 </div>
 
-                <Button variant="outline-dark" onClick={ this.handleModalShow.bind( this, index )}>
+                {/* <Button variant="outline-dark" onClick={ this.handleModalShow.bind( this, index )}>
                   Read More
                 </Button>
 
@@ -99,15 +99,41 @@ export class Events extends Component {
                     <Image src={ modalData.key_photo ? modalData.key_photo.photo_link : modalData.key_photo } thumbnail />
                     <h5>{ modalData.localized_location }</h5>
                     <div className="event-description">
-                      <div>Description: { parse(modalData.description) }</div>
+                      <div>Description: { desc }</div>
                     </div>
                     <a className="btn btn-outline-dark" href={ modalData.link } target="_blank" rel="noopener noreferrer">Go To Posting</a>
                   </Modal.Body>                  
-                </Modal>
+                </Modal> */}
+                <Button type="button" className="btn" variant="dark" data-toggle="modal" data-target={`#modal-${ index }`}>
+                  Read More
+                </Button>
                 <a className="btn btn-outline-dark" href={ event.link } target="_blank" rel="noopener noreferrer">Go To Posting</a>
                 
-                <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button>    
-                
+
+                <div className="modal fade" id={`modal-${ index }`} tabIndex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                  <div className="modal-dialog modal-dialog-scrollable" role="document">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title" id="">Modal title</h5>
+                        <Button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </Button>
+                      </div>
+                      <div className="modal-body">
+                        <Image src={ event.key_photo ? event.key_photo.photo_link : event.key_photo } thumbnail />
+                        <h5>{ event.localized_location }</h5>
+                        <div className="event-description">
+                          <div>Description: { desc }</div>
+                        </div>
+                        <a className="btn btn-outline-dark" href={ event.link } target="_blank" rel="noopener noreferrer">Go To Posting</a>
+                      </div>
+                      <div className="modal-footer">
+                        <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button>    
+                        <Button type="button" className="btn btn-secondary" data-dismiss="modal">Close</Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 {/* <Row>
                   <Col>
                   { displayedIndex === index ? <Button className="btn btn-outline-dark" onClick={ this.handleCollapse.bind(this)}>Collapse</Button> : 
