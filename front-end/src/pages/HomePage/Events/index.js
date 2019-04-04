@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Button, Modal, Row, Col, Image } from 'react-bootstrap';
+import { Container, Button, Modal, Row, Col, Image, Form } from 'react-bootstrap';
 import parse from 'html-react-parser';
 import axios from 'axios';
 
@@ -12,19 +12,23 @@ export class Events extends Component {
     super(props);
     this.state = {
       events: [],
-      interest: 'python'
+      query: '',
+      zip: 0,
+      radius: 10,
+      searchClicked: false
     }
   }
   
   componentDidMount = () => {
-    this.getMeetup();
+    this.getMeetups();
   }
 
-  handleModalShow = ( index ) => {
-    const { events, readMore } = this.state
-
-    this.setState({ readMore: !readMore, modalData: events[index] })
-  }
+  handleInputChange = event => {
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value
+    });
+  };
   
   handleShareAction = ( index ) => {
     const { events } = this.state
@@ -38,19 +42,64 @@ export class Events extends Component {
     })
   }
   //Get Meetup API
-  getMeetup = async () => {
-    let interest = interest;
-    const events = await axios.get(`https://cors-anywhere.herokuapp.com/api.meetup.com/find/groups?&zip=94544&text=programming&radius=10&key=${Meetup_API}`,{crossDomain: true})
+  getMeetups = async () => {
+    let { query, zip, radius, searchClicked } = this.state
+    this.setState({ searchClicked: true })
+    query.replace(" ", "_")
+    const events = await axios.get(
+      `https://cors-anywhere.herokuapp.com/api.meetup.com/find/groups?
+      &zip=${ zip > 0 ? zip : 94544 }
+      &text=${ query ? query : "programming" }
+      &radius=${ radius ? radius : 10 }
+      &key=${ Meetup_API }`,{ crossDomain: true }
+    )
     this.setState({
-      events: events.data
+      events: events.data,
+      searchClicked: false
     })
   }
   
   render() {
-    const { events } = this.state
+    const { events, searchClicked } = this.state
     return (
       <Container fluid={true} className="center">
         <h2><u>Events</u></h2>
+        <hr></hr>
+        <Form>   
+          <Row>
+            <Col>
+              <Form.Group controlId="">
+                <Form.Label>Keyword Search</Form.Label>
+                <Form.Control type="text" name="query" onChange={ this.handleInputChange.bind( this )} placeholder="e.g. Software Developer, NodeJs" />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="">
+                <Form.Label>Zip Code</Form.Label>
+                <Form.Control type="text" name="zip" onChange={ this.handleInputChange.bind( this )} placeholder="e.g. 94544" />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="">
+                <Form.Label>Radius (in miles)</Form.Label>
+                <Form.Control type="number" name="radius" onChange={ this.handleInputChange.bind( this )} placeholder="e.g. 10, 50, 100" />
+              </Form.Group>          
+            </Col>
+          </Row>      
+          <Row>
+            <Col className="center">
+              { searchClicked ? 
+                <div className="spinner-border" role="status" variant="light">
+                  <span className="sr-only">Loading...</span>
+                </div>                
+                : 
+                <Button variant="dark" onClick={ this.getMeetups.bind( this )} type="button">
+                  Search
+                </Button>
+              }
+            </Col>
+          </Row> 
+        </Form>
         <hr></hr>
         <Row className="event-row">          
           { events ? events.map( (event, index) =>  {     
@@ -81,7 +130,7 @@ export class Events extends Component {
                         <Image src={ event.key_photo ? event.key_photo.photo_link : event.key_photo } thumbnail />
                         <h5><strong>Location: </strong>{ event.localized_location }</h5>
                         <div className="event-description">
-                          <p><strong>Description: </strong>{ desc }</p>
+                          <div><strong>Description: </strong>{ desc }</div>
                         </div>
                         <a className="btn btn-outline-dark" href={ event.link } target="_blank" rel="noopener noreferrer">Go To Posting</a>
                       </div>

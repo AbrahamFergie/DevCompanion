@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Container, Row, Col, Button } from 'react-bootstrap';
+import { Image, Container, Row, Col, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import NewsAPI from 'newsapi';
 
@@ -12,7 +12,9 @@ export class NewsFeeds extends Component {
   constructor(props){
     super(props);
     this.state = {
-      articles: []
+      articles: [],
+      query: "",
+      searchClicked: false
     }
   }
 
@@ -20,14 +22,28 @@ export class NewsFeeds extends Component {
     this.getNews()
   }
   // Get API for news feeds.
-  getNews = async () => {
+  getNews = async ( ) => {
+    const { query } = this.state
+    if( query ) this.setState({ searchClicked: true })
+    const newQuery = query ? query : ""
     const payload = await newsapi.v2.topHeadlines({
+      q: newQuery,
       category: 'technology',
       language: 'en',
       country: 'us'
     })
-    this.setState({ articles: payload.articles })
+    this.setState({ 
+      articles: payload.articles, 
+      searchClicked: false 
+    })
  }
+
+  handleInputChange = event => {
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value
+    });
+  };
 
  handleShareAction = ( index ) => {
     const { articles } = this.state
@@ -42,9 +58,34 @@ export class NewsFeeds extends Component {
   }
 
   render() {
+    const { searchClicked } = this.state
     return (
       <Container fluid={true} className="center">
         <h2><u>News Articles</u></h2>
+        <hr></hr>
+        <Form>   
+          <Row>
+            <Col>
+              <Form.Group controlId="">
+                <Form.Label>Keyword Search</Form.Label>
+                <Form.Control type="text" name="query" onChange={ this.handleInputChange.bind( this )} placeholder="e.g. Apple" />
+              </Form.Group>          
+            </Col>
+          </Row>       
+          <Row>
+            <Col className="center">
+              { searchClicked ? 
+                <div className="spinner-border" role="status" variant="light">
+                  <span className="sr-only">Loading...</span>
+                </div>                
+                : 
+                <Button variant="dark" onClick={ this.getNews.bind( this )} type="button">
+                  Search
+                </Button>
+              }
+            </Col>
+          </Row>       
+        </Form>
         <hr></hr>
         <Row className="article-row">
           { this.state.articles ? this.state.articles.map( ( article, index ) => {
