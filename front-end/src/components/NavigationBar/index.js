@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, Button, ButtonGroup } from 'react-bootstrap';
+import { Container, Row, Col, Navbar, Nav, Button, ButtonGroup } from 'react-bootstrap';
 import axios from 'axios';
 
 require("./index.css");
@@ -37,40 +37,46 @@ export default class NavigationBar extends Component {
   }
 
   handleRedirect = async ( page ) => {
-    const userLoggedIn = await axios.get("/api/user/check-user")
-    if( userLoggedIn.data ) {
-      this.props.history.push( page, { loggedIn: userLoggedIn.data })
+    const payload = await axios.get("/api/user/check-user")
+    const { userLoggedIn, user } = payload.data
+    if( userLoggedIn ) {
+      this.props.history.push( page, { loggedIn: userLoggedIn, user })
     } else {
-      this.props.history.push("/", { loggedIn: userLoggedIn.data })    
+      this.props.history.push("/", { loggedIn: userLoggedIn, user })    
     }
   }
 
   handleHomeRoute = async () => {
-    const userLoggedIn = await axios.get("/api/user/check-user")
-    if( userLoggedIn.data ) {
-      this.props.history.push( "/home", { loggedIn: userLoggedIn.data })    
+    const payload = await axios.get("/api/user/check-user")
+    const { userLoggedIn, user } = payload.data
+    if( userLoggedIn ) {
+      this.props.history.push( "/home", { loggedIn: userLoggedIn })    
     } else {
-      this.props.history.push("/", { loggedIn: userLoggedIn.data })    
+      this.props.history.push("/", { loggedIn: userLoggedIn })    
     }
   }
   
   render() {
     const { userLoggedIn } = this.state
     return (
-      <Navbar className="fixed-top">
+      <Navbar className="fixed-top" collapseOnSelect expand="lg">
         <Navbar.Brand className="navvy"><Button variant="light" onClick={this.handleHomeRoute.bind(this)}>DevCompanion</Button></Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse>
-          <Nav className="mr-auto">
-          <ButtonGroup toggle>
-            <Button type="button" variant="dark" defaultChecked value="1" className="navvy" onClick={this.handleRedirect.bind(this, "/home")}>Home</Button>
-            <Button type="button" variant="dark" value="2" className="navvy" onClick={this.handleRedirect.bind(this, "/share-page")}>Shared</Button>
-            <Button type="button" variant="dark" value="3" className="navvy" onClick={this.handleRedirect.bind(this, "/profile")}>Profile</Button>
-          </ButtonGroup>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="w-100">
+            <ButtonGroup toggle>
+              <Button type="button" variant="dark" defaultChecked value="1" className="navvy" onClick={this.handleRedirect.bind(this, "/home")}>Home</Button>
+              <Button type="button" variant="dark" value="2" className="navvy" onClick={this.handleRedirect.bind(this, "/share-page")}>Shared</Button>
+              <Button type="button" variant="dark" value="3" className="navvy" onClick={this.handleRedirect.bind(this, "/profile")}>Profile</Button>
+            </ButtonGroup>
+            <Row className="w-100 float-right">
+              <Col className="float-right">
+                { userLoggedIn ? <Button variant="secondary" onClick={this.handleLogout.bind(this)} className="btn float-right"><strong>Logout</strong></Button> : <div></div> }
+              </Col>
+            </Row>
           </Nav>
         </Navbar.Collapse>
-        { userLoggedIn ? <Button variant="outline-secondary" onClick={this.handleLogout.bind(this)} className="btn float-right"><strong>Logout</strong></Button> : <div></div> }
       </Navbar>
-    );
+    )
   }
 }

@@ -134,11 +134,9 @@ export default class User extends Component {
           <Col>
           { user && clicked ? 
             <Row>
-              <Col></Col>
-              <Col></Col>
               <Col className="center">
                 <Image 
-                  className="w-100 profile" 
+                  id="profile" 
                   src={this.state.user.picture} 
                   alt="https://via.placeholder.com/300/09f/fff.png" 
                   rounded
@@ -148,17 +146,13 @@ export default class User extends Component {
                 <input name="foo" type="file" onChange={this.onDrop.bind(this)} />
                 <br></br>
               </Col>
-              <Col></Col>
-              <Col></Col>
             </Row>
-            : <Row>
-              <Col></Col>
+            : 
+            <Row>
               <Col className="center"><h1>Hello {user.username}!</h1></Col>
               <Col>
                 <Image className="w-100" src={user.picture} rounded fluid />
               </Col>
-              <Col></Col>
-              <Col></Col>
             </Row>
           }
           </Col>

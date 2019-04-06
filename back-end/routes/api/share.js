@@ -13,7 +13,7 @@ router.post("/add", (request, response) => {
 			const { title, author, url } = payload
 			article.create({ user, title, author, url }, (err, newArticle) => {
 				if(err) console.log('====err====', err)
-				return response.json({ message: "Success from article route" })
+				return response.json({ shared: true })
 			})
 		}
 		if( type === "event" ){
@@ -21,7 +21,7 @@ router.post("/add", (request, response) => {
 
 			event.create({ user, name, localized_location, link }, (err, newEvent) => {
 				if(err) console.log('====err====', err)
-				return response.json({ message: "Success from event route" })
+				return response.json({ shared: true })
 			})
 		}
 		if( type === "job" ){
@@ -29,9 +29,39 @@ router.post("/add", (request, response) => {
 
 			job.create({ user, title, location, url }, (err, newJob) => {
 				if(err) console.log('====err====', err)
-				return response.json({ message: "Success from job route" })
+				return response.json({ shared: true })
 			})
 		}
+	}
+})
+
+router.post("/check-shared", ( request, response ) => {
+	const { type, payload } = request.body
+	const { job, article, event} = share
+
+	if( type === "article" ){
+
+		article.find({ url: payload }, ( err, foundArticle ) => {
+			if( err ) console.log( '====err====', err )
+			if( foundArticle.length > 0 ) return response.json({ found: true })
+			return response.json({ found: false })
+		})
+	}
+	if( type === "event" ){
+
+		event.find({ link: payload }, (err, foundEvent) => {
+			if(err) console.log('====err====', err)
+			if( foundEvent.length > 0 ) return response.json({ found: true })
+			return response.json({ found: false })
+		})
+	}
+	if( type === "job" ){
+
+		job.find({ url: payload }, (err, foundJob) => {
+			if(err) console.log('====err====', err)
+			if( foundJob.length > 0 ) return response.json({ found: true })
+			return response.json({ found: false })
+		})
 	}
 })
 
