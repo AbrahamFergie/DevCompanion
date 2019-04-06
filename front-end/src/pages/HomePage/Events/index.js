@@ -30,13 +30,44 @@ export class Events extends Component {
     });
   };
   
+  // handleShareAction = ( index ) => {
+  //   const { events } = this.state
+  //   const event = events[ index ]
+  //   axios.post("/api/share/add", { type: "event", payload: event })
+  //   .then( response => {
+  //     console.log("event response", response)
+  //   })
+  //   .catch( err => {
+  //     console.log('====err====', err)
+  //   })
+  // }
   handleShareAction = ( index ) => {
     const { events } = this.state
-    const event = events[ index ]
-    axios.post("/api/share/add", { type: "event", payload: event })
+    let event = events[ index ]
+    console.log('====event====', event)
+    axios.post("/api/share/check-shared", { type: "event", payload: event.link })
     .then( response => {
-      console.log("event response", response)
-    })
+      const { found } = response.data
+      if( found ) { 
+        let newEvents = events
+        event.found = true
+        newEvents[ index ] = event
+
+        return this.setState({ events: newEvents }) 
+      } else {
+        axios.post("/api/share/add", { type: "event", payload: event })
+        .then( response => {
+          const { shared } = response.data
+          if( shared ) { 
+            let newEvents = events
+            event.shared = true
+            newEvents[ index ] = event
+            
+            return this.setState({ events: newEvents })            
+          }
+        })
+      }      
+    })    
     .catch( err => {
       console.log('====err====', err)
     })
@@ -65,21 +96,21 @@ export class Events extends Component {
       <Container fluid={true} className="center">
         <h2><u>Events</u></h2>
         <hr></hr>
-        <Form>   
+        <Form className="">   
           <Row>
-            <Col>
+            <Col className="center" md>
               <Form.Group controlId="">
                 <Form.Label>Keyword Search</Form.Label>
                 <Form.Control type="text" name="query" onChange={ this.handleInputChange.bind( this )} placeholder="e.g. Software Developer, NodeJs" />
               </Form.Group>
             </Col>
-            <Col>
+            <Col className="center" md>
               <Form.Group controlId="">
                 <Form.Label>Zip Code</Form.Label>
                 <Form.Control type="text" name="zip" onChange={ this.handleInputChange.bind( this )} placeholder="e.g. 94544" />
               </Form.Group>
             </Col>
-            <Col>
+            <Col className="center" md>
               <Form.Group controlId="">
                 <Form.Label>Radius (in miles)</Form.Label>
                 <Form.Control type="number" name="radius" onChange={ this.handleInputChange.bind( this )} placeholder="e.g. 10, 50, 100" />
@@ -135,7 +166,14 @@ export class Events extends Component {
                         <a className="btn btn-outline-dark" href={ event.link } target="_blank" rel="noopener noreferrer">Go To Posting</a>
                       </div>
                       <div className="modal-footer">
-                        <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button>    
+                        { event.shared || event.found ? 
+                          event.found ?
+                            <h3><strong>Already Shared</strong></h3>
+                            :
+                            <h3><strong>Shared</strong></h3>
+                          :
+                          <Button className="btn" variant="dark" onClick={ this.handleShareAction.bind(this, index) }>Share</Button> 
+                        }
                         <Button type="button" className="btn btn-secondary" data-dismiss="modal">Close</Button>
                       </div>
                     </div>
