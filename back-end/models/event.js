@@ -17,6 +17,12 @@ const Event = new Schema({
     },
     link: {
         type: String
+    },
+    likes: {
+        type: Number
+    },
+    dislikes: {
+        type: Number
     }
 },
     {

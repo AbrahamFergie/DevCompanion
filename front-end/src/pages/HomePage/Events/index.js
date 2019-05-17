@@ -29,22 +29,11 @@ export class Events extends Component {
       [name]: value
     });
   };
-  
-  // handleShareAction = ( index ) => {
-  //   const { events } = this.state
-  //   const event = events[ index ]
-  //   axios.post("/api/share/add", { type: "event", payload: event })
-  //   .then( response => {
-  //     console.log("event response", response)
-  //   })
-  //   .catch( err => {
-  //     console.log('====err====', err)
-  //   })
-  // }
+
   handleShareAction = ( index ) => {
     const { events } = this.state
     let event = events[ index ]
-    console.log('====event====', event)
+  
     axios.post("/api/share/check-shared", { type: "event", payload: event.link })
     .then( response => {
       const { found } = response.data

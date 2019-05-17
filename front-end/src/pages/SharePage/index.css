@@ -1,3 +1,10 @@
 button {
     background-color: #73958D;
 }
+
+.orient-shared {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

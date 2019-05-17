@@ -28,21 +28,9 @@ export class Jobs extends Component {
     });
   };
 
-  // handleShareAction( index ) {
-  //   const { jobs } = this.state
-  //   const job = jobs[ index ]
-  //   axios.post("/api/share/add", { type: "job", payload: job })
-  //   .then( response => {
-  //     console.log("job response", response)
-  //   })
-  //   .catch( err => {
-  //     console.log('====err====', err)
-  //   })
-  // }
   handleShareAction = ( index ) => {
     const { jobs } = this.state
     let job = jobs[ index ]
-    console.log('====job====', job)
     axios.post("/api/share/check-shared", { type: "job", payload: job.url })
     .then( response => {
       const { found } = response.data
@@ -78,9 +66,8 @@ export class Jobs extends Component {
     query.replace(" ", "_")
     location.replace(" ", "_")
     const jobs = await axios.get(
-      `https://cors-anywhere.herokuapp.com/jobs.github.com/positions.json?description=${ query ? query : "Javascript" }&location=${ location ? location : "us" }`, { crossDomain: true }
+      `https://cors-anywhere.herokuapp.com/jobs.github.com/positions.json?description=${ query ? query : "Javascript" }&location=${ location ? location : "san+francisco" }`, { crossDomain: true }
     )
-
     this.setState({
       jobs: jobs.data,
       searchClicked: false

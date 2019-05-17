@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Container, Row, Col, Button, Form } from 'react-bootstrap';
+import { Image, Container, Row, Col, Button, Form, Dropdown } from 'react-bootstrap';
 import axios from 'axios';
 import NewsAPI from 'newsapi';
 
@@ -14,6 +14,7 @@ export class NewsFeeds extends Component {
     this.state = {
       articles: [],
       query: "",
+      selectedCategory: "Category",
       searchClicked: false
     }
   }
@@ -23,12 +24,12 @@ export class NewsFeeds extends Component {
   }
   // Get API for news feeds.
   getNews = async ( ) => {
-    const { query } = this.state
+    const { query, selectedCategory } = this.state
     this.setState({ searchClicked: true })
     const newQuery = query ? query : ""
     const payload = await newsapi.v2.topHeadlines({
       q: newQuery,
-      category: 'technology',
+      category: selectedCategory !== "Category" ? selectedCategory : "technology",
       language: 'en',
       country: 'us'
     })
@@ -45,10 +46,15 @@ export class NewsFeeds extends Component {
     });
   };
 
+  handleCategorySelect = event => {
+    event.persist()
+    const { innerText } = event.nativeEvent.srcElement
+    this.setState({ selectedCategory: innerText })
+  }
+
  handleShareAction = ( index ) => {
     const { articles } = this.state
     let article = articles[ index ]
-    console.log('====article====', article)
     axios.post("/api/share/check-shared", { type: "article", payload: article.url })
     .then( response => {
       const { found } = response.data
@@ -78,7 +84,7 @@ export class NewsFeeds extends Component {
   }
 
   render() {
-    const { searchClicked } = this.state
+    const { searchClicked, selectedCategory } = this.state
     return (
       <Container fluid={true} className="center">
         <h2><u>News Articles</u></h2>
@@ -89,6 +95,21 @@ export class NewsFeeds extends Component {
               <Form.Group controlId="">
                 <Form.Label>Keyword Search</Form.Label>
                 <Form.Control type="text" name="query" onChange={ this.handleInputChange.bind( this )} placeholder="e.g. Apple" />
+                <Dropdown>
+                  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                    { selectedCategory }
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={ this.handleCategorySelect.bind( this )}>General</Dropdown.Item>                    
+                    <Dropdown.Item onClick={ this.handleCategorySelect.bind( this )}>Technology</Dropdown.Item>                    
+                    <Dropdown.Item onClick={ this.handleCategorySelect.bind( this )}>Business</Dropdown.Item>                    
+                    <Dropdown.Item onClick={ this.handleCategorySelect.bind( this )}>Health</Dropdown.Item>                    
+                    <Dropdown.Item onClick={ this.handleCategorySelect.bind( this )}>Science</Dropdown.Item>                    
+                    <Dropdown.Item onClick={ this.handleCategorySelect.bind( this )}>Sports</Dropdown.Item>                    
+                    <Dropdown.Item onClick={ this.handleCategorySelect.bind( this )}>Entertainment</Dropdown.Item>                    
+                  </Dropdown.Menu>
+                </Dropdown>
               </Form.Group>          
             </Col>
           </Row>       
