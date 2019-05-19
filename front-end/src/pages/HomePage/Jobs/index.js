@@ -4,6 +4,8 @@ import axios from 'axios';
 import parse from 'html-react-parser';
 import { parseJsonSourceFileConfigFileContent } from 'typescript';
 
+const indeedApi = require('indeed-api').getInstance("YOUR-PUBLISHER-ID-HERE");
+
 require("./index.css");
 
 export class Jobs extends Component {
@@ -18,7 +20,7 @@ export class Jobs extends Component {
   }
 
   componentDidMount = () => {
-    this.getGitHubJobs();
+    this.getJobs();
   }
   
   handleInputChange = event => {
@@ -28,21 +30,9 @@ export class Jobs extends Component {
     });
   };
 
-  // handleShareAction( index ) {
-  //   const { jobs } = this.state
-  //   const job = jobs[ index ]
-  //   axios.post("/api/share/add", { type: "job", payload: job })
-  //   .then( response => {
-  //     console.log("job response", response)
-  //   })
-  //   .catch( err => {
-  //     console.log('====err====', err)
-  //   })
-  // }
   handleShareAction = ( index ) => {
     const { jobs } = this.state
     let job = jobs[ index ]
-    console.log('====job====', job)
     axios.post("/api/share/check-shared", { type: "job", payload: job.url })
     .then( response => {
       const { found } = response.data
@@ -72,17 +62,18 @@ export class Jobs extends Component {
   }
 
   // Get GitHubJobs API.
-  getGitHubJobs = async () => {
+  getJobs = async () => {
     let { query, location } = this.state;
     this.setState({ searchClicked: true })
     query.replace(" ", "_")
     location.replace(" ", "_")
-    const jobs = await axios.get(
-      `https://cors-anywhere.herokuapp.com/jobs.github.com/positions.json?description=${ query ? query : "Javascript" }&location=${ location ? location : "us" }`, { crossDomain: true }
+    const githubJobs = await axios.get(
+      `https://cors-anywhere.herokuapp.com/jobs.github.com/positions.json?description=${ query ? query : "Javascript" }&location=${ location ? location : "san+francisco" }`, { crossDomain: true }
     )
-
+    // const indeedJobs = await indeedApi.JobSearch()
+    // console.log('====indeedJobs====', indeedJobs)
     this.setState({
-      jobs: jobs.data,
+      jobs: githubJobs.data,
       searchClicked: false
     })
   }
@@ -115,7 +106,7 @@ export class Jobs extends Component {
                   <span className="sr-only">Loading...</span>
                 </div>                
                 : 
-                <Button variant="dark" onClick={ this.getGitHubJobs.bind( this )} type="button">
+                <Button variant="dark" onClick={ this.getJobs.bind( this )} type="button">
                   Search
                 </Button>
               }

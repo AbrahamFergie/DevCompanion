@@ -17,6 +17,14 @@ const Article = new Schema({
     },
     url: {
         type: String
+    },
+    likes: {
+        type: Number,
+        default: 0
+    },
+    dislikes: {
+        type: Number,
+        default: 0
     }
 },
     {

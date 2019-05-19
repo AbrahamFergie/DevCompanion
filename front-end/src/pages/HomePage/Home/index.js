@@ -15,17 +15,17 @@ class Home extends Component {
     return(
       <Container fluid={true}>
         <Row className="flex-center">
-        <Tabs className="tabs" defaultActiveKey="news-feed" transition={false} id="noanim-tab-example">
-          <Tab eventKey="news-feed" title="News-Feed">            
-              <NewsFeeds />
-          </Tab>
-          <Tab eventKey="jobs" title="Jobs">            
-              <Jobs />
-          </Tab>
-          <Tab eventKey="events" title="Events">            
-              <Events />
-          </Tab>
-        </Tabs>
+          <Tabs className="tabs" defaultActiveKey="news-feed" transition={false} id="noanim-tab-example">
+            <Tab eventKey="news-feed" title="| News-Feed |">            
+                <NewsFeeds />
+            </Tab>
+            <Tab eventKey="jobs" title="| Jobs |">            
+                <Jobs />
+            </Tab>
+            <Tab eventKey="events" title="| Events |">            
+                <Events />
+            </Tab>
+          </Tabs>
         </Row>
       </Container>
     );

@@ -17,6 +17,12 @@ const Job = new Schema({
     },
     url: {
         type: String
+    },
+    likes: {
+        type: Number
+    },
+    dislikes: {
+        type: Number
     }
 },
     {
